@@ -23,11 +23,19 @@ public class Power.Services.BrightnessManager : Object {
                 return false;
             }
 
-            try {
-                if (gala_brightness_manager.get_n_monitors () == 0) {
-                    return false;
-                }
-            } catch {}
+            return true;
+        }
+    }
+
+    public bool has_monitors {
+        get {
+            if (gala_brightness_manager == null) {
+                return false;
+            }
+
+            if (get_n_monitors () <= 0) {
+                return false;
+            }
 
             return true;
         }
