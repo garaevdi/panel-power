@@ -34,12 +34,7 @@ public class Power.Services.BrightnessManager : Object {
     }
 
     construct {
-        init.begin ((obj, res) => {
-            try {
-                init.end (res);
-                connect_signals ();
-            } catch {}
-        });
+        init.begin ();
     }
 
     public static Power.Services.BrightnessManager get_default () {
@@ -106,16 +101,13 @@ public class Power.Services.BrightnessManager : Object {
     private async void init () throws Error {
         try {
             gala_brightness_manager = yield Bus.get_proxy (BusType.SESSION, GALA_INTERFACE, GALA_PATH);
+            gala_brightness_manager.monitors_changed.connect (on_monitors_changed);
+            gala_brightness_manager.monitor_brightness_changed.connect (on_monitor_brightness_changed);
             connected ();
         } catch (Error e) {
             warning ("Couldn't connect to Gala's BrightnessManager: %s", e.message);
             throw e;
         }
-    }
-
-    private void connect_signals () {
-        gala_brightness_manager.monitors_changed.connect (on_monitors_changed);
-        gala_brightness_manager.monitor_brightness_changed.connect (on_monitor_brightness_changed);
     }
 
     private void on_monitors_changed () {
