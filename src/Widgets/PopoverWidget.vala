@@ -117,6 +117,9 @@ public class Power.Widgets.PopoverWidget : Gtk.Box {
         dm.notify["has-battery"].connect ((s, p) => {
             update_device_separator_revealer ();
         });
+        brightness_manager.notify["has-monitors"].connect ((s, p) => {
+            update_device_separator_revealer ();
+        });
 
         settings.bind ("show-percentage", show_percent_switch, "active", SettingsBindFlags.DEFAULT);
 
@@ -138,17 +141,9 @@ public class Power.Widgets.PopoverWidget : Gtk.Box {
                 warning ("Failed to open power settings: %s", e.message);
             }
         });
-
-        brightness_manager.monitors_changed.connect (() => {
-            if (brightness_manager.present) {
-                last_separator_revealer.reveal_child = true;
-            } else {
-                last_separator_revealer.reveal_child = false;
-            }
-        });
     }
 
     private void update_device_separator_revealer () {
-        device_separator_revealer.reveal_child = brightness_manager.present && dm.has_battery;
+        device_separator_revealer.reveal_child = brightness_manager.has_monitors && dm.has_battery;
     }
 }
