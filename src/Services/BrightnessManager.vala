@@ -9,7 +9,6 @@ public class Power.Services.BrightnessManager : Object {
     private const string GALA_INTERFACE = "io.elementary.gala.BrightnessManager";
     private const string GALA_PATH = "/io/elementary/gala/BrightnessManager";
 
-    public signal void connected ();
     public signal void monitors_changed ();
     public signal void monitor_brightness_changed (int index, double value);
 
@@ -34,12 +33,13 @@ public class Power.Services.BrightnessManager : Object {
     }
 
     construct {
-        init.begin ((obj, res) => {
-            try {
-                init.end (res);
-                connect_signals ();
-            } catch {}
-        });
+        try {
+            gala_brightness_manager = Bus.get_proxy_sync (BusType.SESSION, GALA_INTERFACE, GALA_PATH);
+            gala_brightness_manager.monitors_changed.connect (on_monitors_changed);
+            gala_brightness_manager.monitor_brightness_changed.connect (on_monitor_brightness_changed);
+        } catch (Error e) {
+            warning ("Couldn't connect to Gala's BrightnessManager: %s", e.message);
+        }
     }
 
     public static Power.Services.BrightnessManager get_default () {
@@ -100,22 +100,6 @@ public class Power.Services.BrightnessManager : Object {
         } catch (Error e) {
             warning ("Coulnd't set %n monitor's brightness: %s", index, e.message);
         }
-    }
-
-
-    private async void init () throws Error {
-        try {
-            gala_brightness_manager = yield Bus.get_proxy (BusType.SESSION, GALA_INTERFACE, GALA_PATH);
-            connected ();
-        } catch (Error e) {
-            warning ("Couldn't connect to Gala's BrightnessManager: %s", e.message);
-            throw e;
-        }
-    }
-
-    private void connect_signals () {
-        gala_brightness_manager.monitors_changed.connect (on_monitors_changed);
-        gala_brightness_manager.monitor_brightness_changed.connect (on_monitor_brightness_changed);
     }
 
     private void on_monitors_changed () {

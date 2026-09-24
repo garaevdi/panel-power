@@ -59,10 +59,10 @@ public class Power.Indicator : Wingpanel.Indicator {
                 update_visibility ();
             }
 
+            setup_scroll_controller ();
             dm.notify["has-battery"].connect (update_visibility);
             dm.notify["display-device"].connect (update_display_device);
             settings.changed["show-percentage"].connect (update_tooltip);
-            brightness_manager.connected.connect (update_scroll_controller);
         }
 
         return display_widget;
@@ -198,7 +198,7 @@ public class Power.Indicator : Wingpanel.Indicator {
         return false;
     }
 
-    private void update_scroll_controller () {
+    private void setup_scroll_controller () {
         if (brightness_manager.present) {
             var scroll_controller = new Gtk.EventControllerScroll (BOTH_AXES);
             scroll_controller.scroll.connect ((controller, dx, dy) => {
