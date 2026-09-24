@@ -21,9 +21,6 @@ public class Power.Widgets.ScreenBrightnessList : Granite.Bin {
     private Power.Services.BrightnessManager brightness_manager;
     private Gtk.ListBox list_box;
 
-    public bool natural_scroll_touchpad { get; set; }
-    public bool natural_scroll_mouse { get; set; }
-
     construct {
         brightness_manager = Power.Services.BrightnessManager.get_default ();
 
