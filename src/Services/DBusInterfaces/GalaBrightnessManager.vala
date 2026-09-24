@@ -17,9 +17,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-namespace Power.Services.DBusInterfaces {
-  [DBus (name = "io.elementary.gala.BrightnessManager")]
-  interface GalaBrightnessManager : GLib.Object {
+[DBus (name = "io.elementary.gala.BrightnessManager")]
+interface Power.GalaBrightnessManager : GLib.Object {
     public signal void monitors_changed ();
     public signal void monitor_brightness_changed (int index, double value);
 
@@ -29,5 +28,4 @@ namespace Power.Services.DBusInterfaces {
     public abstract int get_n_monitors () throws GLib.IOError, GLib.DBusError;
     public abstract void set_global_brightness (double scale) throws GLib.IOError, GLib.DBusError;
     public abstract void set_monitor_brightness (int index, double brightness) throws GLib.IOError, GLib.DBusError;
-  }
 }

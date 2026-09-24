@@ -13,7 +13,7 @@ public class Power.Services.BrightnessManager : Object {
     public signal void monitors_changed ();
     public signal void monitor_brightness_changed (int index, double value);
 
-    private Power.Services.DBusInterfaces.GalaBrightnessManager? gala_brightness_manager;
+    private Power.GalaBrightnessManager? gala_brightness_manager;
 
     private static BrightnessManager? instance = null;
 
