@@ -6,7 +6,7 @@
  */
 
 public class Power.Services.BrightnessManager : Object {
-    private const string GALA_INTERFACE = "io.elementary.gala";
+    private const string GALA_INTERFACE = "io.elementary.gala.BrightnessManager";
     private const string GALA_PATH = "/io/elementary/gala/BrightnessManager";
 
     public signal void connected ();
