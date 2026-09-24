@@ -3,15 +3,15 @@ public class Power.Utils {
     private const double BRIGHTNESS_STEP = 0.005;
     private static double total_y_delta = 0;
     private static double total_x_delta = 0;
+    private static GLib.Settings mouse_settings = new GLib.Settings ("org.gnome.desktop.peripherals.mouse");
+    private static GLib.Settings touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
 
-    public static bool handle_global_scroll_event (Gdk.ScrollEvent e,
-                                                   bool natural_scroll_mouse,
-                                                   bool natural_scroll_touchpad) {
+    public static bool handle_global_scroll_event (Gdk.ScrollEvent e) {
         if (e.get_device () == null) {
             return false;
         }
 
-        var dir = calculate_delta (e, natural_scroll_mouse, natural_scroll_touchpad);
+        var dir = calculate_delta (e);
 
         if (dir.abs () > 0.0) {
             total_y_delta = 0.0;
@@ -24,15 +24,12 @@ public class Power.Utils {
         return Gdk.EVENT_STOP;
     }
 
-    public static bool handle_local_scroll_event (Gdk.ScrollEvent e,
-                                                  bool natural_scroll_mouse,
-                                                  bool natural_scroll_touchpad,
-                                                  int index) {
+    public static bool handle_local_scroll_event (Gdk.ScrollEvent e, int index) {
         if (e.get_device () == null) {
             return false;
         }
 
-        var dir = calculate_delta (e, natural_scroll_mouse, natural_scroll_touchpad);
+        var dir = calculate_delta (e);
 
         if (dir.abs () > 0.0) {
             total_y_delta = 0.0;
@@ -46,17 +43,15 @@ public class Power.Utils {
     }
 
     /* Smooth scrolling vertical support. Accumulate delta_y until threshold exceeded before actioning */
-    private static double calculate_delta (Gdk.ScrollEvent e,
-                                           bool natural_scroll_mouse,
-                                           bool natural_scroll_touchpad) {
+    private static double calculate_delta (Gdk.ScrollEvent e) {
         var dir = 0.0;
         bool natural_scroll;
         var event_device = e.get_device ();
 
         if (event_device.source == Gdk.InputSource.MOUSE) {
-            natural_scroll = natural_scroll_mouse;
+            natural_scroll = mouse_settings.get_boolean ("natural-scroll");
         } else if (event_device.source == Gdk.InputSource.TOUCHPAD) {
-            natural_scroll = natural_scroll_touchpad;
+            natural_scroll = touchpad_settings.get_boolean ("natural-scroll");
         } else {
             natural_scroll = true;
         }

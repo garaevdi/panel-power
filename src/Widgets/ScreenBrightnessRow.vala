@@ -5,25 +5,17 @@
  * Authored by: Denis Garaev <garaevdi@outlook.com>
  */
 
-public class Power.Widgets.ScreenBrightenssRow : Granite.Bin {
+public class Power.Widgets.ScreenBrightnessRow : Granite.Bin {
     private Services.BrightnessManager brightness_manager;
 
     public int index { get; construct; }
 
-    public bool natural_scroll_touchpad { get; set; }
-    public bool natural_scroll_mouse { get; set; }
-
-    public ScreenBrightenssRow (int index) {
+    public ScreenBrightnessRow (int index) {
         Object (index: index);
     }
 
     construct {
         brightness_manager = Services.BrightnessManager.get_default ();
-
-        var mouse_settings = new GLib.Settings ("org.gnome.desktop.peripherals.mouse");
-        mouse_settings.bind ("natural-scroll", this, "natural-scroll-mouse", SettingsBindFlags.DEFAULT);
-        var touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
-        touchpad_settings.bind ("natural-scroll", this, "natural-scroll-touchpad", SettingsBindFlags.DEFAULT);
 
         var scroll_controller = new Gtk.EventControllerScroll (BOTH_AXES);
         scroll_controller.scroll.connect (on_scroll);
@@ -91,6 +83,6 @@ public class Power.Widgets.ScreenBrightenssRow : Granite.Bin {
     }
 
     private bool on_scroll (Gtk.EventControllerScroll controller, double dx, double dy) {
-        return Utils.handle_local_scroll_event ((Gdk.ScrollEvent) controller.get_current_event (), natural_scroll_mouse, natural_scroll_touchpad, index);
+        return Utils.handle_local_scroll_event ((Gdk.ScrollEvent) controller.get_current_event (), index);
     }
 }

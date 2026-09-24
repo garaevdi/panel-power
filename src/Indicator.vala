@@ -21,8 +21,6 @@ public class Power.Indicator : Wingpanel.Indicator {
     private const double LOW_BATTERY_PERCENTAGE = 20.0;
 
     public bool is_in_session { get; construct; default = false; }
-    public bool natural_scroll_touchpad { get; set; }
-    public bool natural_scroll_mouse { get; set; }
 
     private Widgets.DisplayWidget? display_widget = null;
 
@@ -48,11 +46,6 @@ public class Power.Indicator : Wingpanel.Indicator {
 
         dm = Power.Services.DeviceManager.get_default ();
         brightness_manager = Services.BrightnessManager.get_default ();
-
-        var mouse_settings = new GLib.Settings ("org.gnome.desktop.peripherals.mouse");
-        mouse_settings.bind ("natural-scroll", this, "natural-scroll-mouse", SettingsBindFlags.DEFAULT);
-        var touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
-        touchpad_settings.bind ("natural-scroll", this, "natural-scroll-touchpad", SettingsBindFlags.DEFAULT);
 
         settings = new GLib.Settings ("io.elementary.panel.power");
     }
@@ -210,9 +203,7 @@ public class Power.Indicator : Wingpanel.Indicator {
             var scroll_controller = new Gtk.EventControllerScroll (BOTH_AXES);
             scroll_controller.scroll.connect ((controller, dx, dy) => {
                 if (Utils.handle_global_scroll_event (
-                        (Gdk.ScrollEvent) controller.get_current_event (),
-                        natural_scroll_mouse,
-                        natural_scroll_touchpad)
+                        (Gdk.ScrollEvent) controller.get_current_event ())
                 ) {
                     if (popover_widget == null || !popover_widget.is_visible ()) {
                       show_notification ();
