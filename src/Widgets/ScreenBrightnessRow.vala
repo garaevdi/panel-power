@@ -43,7 +43,7 @@ public class Power.Widgets.ScreenBrightnessRow : Granite.Bin {
             width_request = 175
         };
 
-        var slider_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 2) {
+        var slider_box = new Granite.Box (Gtk.Orientation.VERTICAL, Granite.Box.Spacing.NONE) {
             hexpand = true,
             vexpand = true,
             homogeneous = true
@@ -52,7 +52,7 @@ public class Power.Widgets.ScreenBrightnessRow : Granite.Bin {
         slider_box.append (monitor_label);
         slider_box.append (brightness_slider);
 
-        var box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 4) {
+        var box = new Granite.Box (Gtk.Orientation.HORIZONTAL, Granite.Box.Spacing.HALF) {
             hexpand = true,
             margin_start = 6,
             margin_end = 12
