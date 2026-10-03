@@ -55,13 +55,14 @@ public class Power.Indicator : Wingpanel.Indicator {
             display_widget = new Widgets.DisplayWidget ();
 
             /* No need to display the indicator when the device is completely in AC mode */
-            if (dm.has_battery || brightness_manager.present) {
+            if (dm.has_battery || brightness_manager.has_monitors) {
                 update_visibility ();
             }
 
             setup_scroll_controller ();
             dm.notify["has-battery"].connect (update_visibility);
             dm.notify["display-device"].connect (update_display_device);
+            brightness_manager.notify["has-monitors"].connect (update_visibility);
             settings.changed["show-percentage"].connect (update_tooltip);
         }
 
@@ -85,7 +86,7 @@ public class Power.Indicator : Wingpanel.Indicator {
     private void update_visibility () {
         var dm = Services.DeviceManager.get_default ();
 
-        bool should_be_visible = (dm.has_battery || brightness_manager.present);
+        bool should_be_visible = (dm.has_battery || brightness_manager.has_monitors);
         if (visible != should_be_visible) {
             /* NOTE: popover closes every time you set visibility, so change property only when needed */
             visible = should_be_visible;
@@ -164,7 +165,7 @@ public class Power.Indicator : Wingpanel.Indicator {
             }
         }
 
-        if (primary_text == null && brightness_manager.present) {
+        if (primary_text == null && brightness_manager.has_monitors) {
             primary_text = _("Screen brightness: %i").printf ((int) (brightness_manager.get_global_brightness () * 100));
             secondary_text = _("Scroll to change screen brightness");
         }
