@@ -35,7 +35,7 @@ public class Power.Widgets.ScreenBrightnessRow : Granite.Bin {
         };
 
         if (index == 0) {
-            monitor_label.set_text (monitor_label.get_text () + _(" (Primary)"));
+            monitor_label.set_text (_("%s (Primary)".printf (monitor_label.get_text ())));
         }
 
         brightness_slider = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0, 1, 0.1) {
