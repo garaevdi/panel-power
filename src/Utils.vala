@@ -7,7 +7,8 @@ public class Power.Utils {
     private static GLib.Settings touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
 
     public static bool handle_global_scroll_event (Gdk.ScrollEvent e) {
-        if (e.get_device () == null) {
+        var bm = Power.Services.BrightnessManager.get_default ();
+        if (e.get_device () == null || bm.has_monitors == false) {
             return false;
         }
 
@@ -16,16 +17,16 @@ public class Power.Utils {
         if (dir.abs () > 0.0) {
             total_y_delta = 0.0;
             total_x_delta = 0.0;
-            var delta = (Power.Services.BrightnessManager.get_default ().get_global_brightness () + dir * BRIGHTNESS_STEP);
-            Power.Services.BrightnessManager.get_default ()
-             .set_global_brightness (delta);
+            var delta = (bm.get_global_brightness () + dir * BRIGHTNESS_STEP);
+            bm.set_global_brightness (delta);
         }
 
         return Gdk.EVENT_STOP;
     }
 
     public static bool handle_local_scroll_event (Gdk.ScrollEvent e, int index) {
-        if (e.get_device () == null) {
+        var bm = Power.Services.BrightnessManager.get_default ();
+        if (e.get_device () == null || bm.has_monitors == false) {
             return false;
         }
 
@@ -34,9 +35,8 @@ public class Power.Utils {
         if (dir.abs () > 0.0) {
             total_y_delta = 0.0;
             total_x_delta = 0.0;
-            var delta = (Power.Services.BrightnessManager.get_default ().get_monitor_brightness (index) + dir * BRIGHTNESS_STEP);
-            Power.Services.BrightnessManager.get_default ()
-             .set_monitor_brightness (index, delta);
+            var delta = (bm.get_monitor_brightness (index) + dir * BRIGHTNESS_STEP);
+            bm.set_monitor_brightness (index, delta);
         }
 
         return Gdk.EVENT_STOP;
