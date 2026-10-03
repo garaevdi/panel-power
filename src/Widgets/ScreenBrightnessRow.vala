@@ -7,6 +7,9 @@
 
 public class Power.Widgets.ScreenBrightnessRow : Granite.Bin {
     private Services.BrightnessManager brightness_manager;
+    private Gtk.Scale brightness_slider;
+    private ulong slider_signal;
+    private ulong bm_signal;
 
     public int index { get; construct; }
 
@@ -35,7 +38,7 @@ public class Power.Widgets.ScreenBrightnessRow : Granite.Bin {
             monitor_label.set_text (monitor_label.get_text () + _(" (Primary)"));
         }
 
-        var brightness_slider = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0, 1, 0.1) {
+        brightness_slider = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0, 1, 0.1) {
             margin_start = 2,
             margin_end = 2,
             hexpand = true,
@@ -63,23 +66,27 @@ public class Power.Widgets.ScreenBrightnessRow : Granite.Bin {
 
         child = box;
 
-        ulong slider_signal = 0, dm_signal = 0;
-        slider_signal = brightness_slider.value_changed.connect ((value) => {
-            SignalHandler.block (brightness_manager, dm_signal);
-            brightness_manager.set_monitor_brightness (index, value.get_value ());
-            SignalHandler.unblock (brightness_manager, dm_signal);
-        });
-        dm_signal = brightness_manager.monitor_brightness_changed.connect ((ch_index, value) => {
-            if (index != ch_index) {
-                return;
-            }
-
-            SignalHandler.block (brightness_slider, slider_signal);
-            brightness_slider.set_value (value);
-            SignalHandler.unblock (brightness_slider, slider_signal);
-        });
+        slider_signal = brightness_slider.value_changed.connect (on_value_changed_internally);
+        bm_signal = brightness_manager.monitor_brightness_changed.connect (on_value_changed_externally);
 
         brightness_slider.set_value (brightness_manager.get_monitor_brightness (index));
+    }
+
+    // We'd need to disable signals temporary here, so there wouldn't be a vicious signal loop
+    private void on_value_changed_internally (Gtk.Range value) {
+        SignalHandler.block (brightness_manager, bm_signal);
+        brightness_manager.set_monitor_brightness (index, value.get_value ());
+        SignalHandler.unblock (brightness_manager, bm_signal);
+    }
+
+    private void on_value_changed_externally (int ch_index, double value) {
+        if (index != ch_index) {
+            return;
+        }
+
+        SignalHandler.block (brightness_slider, slider_signal);
+        brightness_slider.set_value (value);
+        SignalHandler.unblock (brightness_slider, slider_signal);
     }
 
     private bool on_scroll (Gtk.EventControllerScroll controller, double dx, double dy) {
