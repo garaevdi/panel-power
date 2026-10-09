@@ -114,12 +114,8 @@ public class Power.Widgets.PopoverWidget : Gtk.Box {
 
         update_device_separator_revealer ();
 
-        dm.notify["has-battery"].connect ((s, p) => {
-            update_device_separator_revealer ();
-        });
-        brightness_manager.notify["has-monitors"].connect ((s, p) => {
-            update_device_separator_revealer ();
-        });
+        dm.notify["has-battery"].connect (update_device_separator_revealer);
+        brightness_manager.notify["has-monitors"].connect (update_device_separator_revealer);
 
         settings.bind ("show-percentage", show_percent_switch, "active", SettingsBindFlags.DEFAULT);
 
