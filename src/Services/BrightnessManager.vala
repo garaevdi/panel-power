@@ -17,13 +17,7 @@ public class Power.Services.BrightnessManager : Object {
     private static BrightnessManager? instance = null;
 
     public bool present {
-        get {
-            if (gala_brightness_manager == null) {
-                return false;
-            }
-
-            return true;
-        }
+        get { return gala_brightness_manager != null; }
     }
 
     public bool has_monitors {
@@ -32,11 +26,7 @@ public class Power.Services.BrightnessManager : Object {
                 return false;
             }
 
-            if (get_n_monitors () <= 0) {
-                return false;
-            }
-
-            return true;
+            return get_n_monitors () > 0;
         }
     }
 
