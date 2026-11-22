@@ -17,7 +17,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-public class Power.Widgets.DisplayWidget : Gtk.Box {
+public class Power.Widgets.DisplayWidget : Granite.Box {
     private static Settings settings = new GLib.Settings ("io.elementary.panel.power");
 
     private Gtk.Revealer percent_revealer;
@@ -37,6 +37,13 @@ public class Power.Widgets.DisplayWidget : Gtk.Box {
 
     private Gtk.Label percent_label;
     private Gtk.Image image;
+
+    public DisplayWidget () {
+        Object (
+            orientation: Gtk.Orientation.HORIZONTAL,
+            spacing: Spacing.DOUBLE
+        );
+    }
 
     construct {
         valign = Gtk.Align.CENTER;
